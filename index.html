@@ -1,3 +1,5 @@
+Remove all image-related elements and logic.
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -62,7 +64,6 @@
       font-size: 14px;
     }
 
-    /* Hidden content */
     #content {
       display: none;
       margin-top: 20px;
@@ -75,27 +76,18 @@
       margin-bottom: 20px;
       color: #3a3550;
     }
-
-    img {
-      width: 100%;
-      height: auto;
-      border-radius: 10px;
-      display: block;
-    }
   </style>
 </head>
 <body>
   <div class="card">
     <h1 id="title">Enter Password</h1>
 
-    <!-- Password section -->
     <div id="login">
       <input id="pw" type="password" placeholder="Password" autocomplete="off" />
       <button id="openBtn" type="button">Open</button>
       <div id="msg"></div>
     </div>
 
-    <!-- Hidden content -->
     <div id="content">
       <div class="intro-text">
 I have a face, but where’s the rest?
@@ -107,14 +99,11 @@ I keep a secret — can you tell me why?
 Before you soar into the open sky, 
 Find what I hold — I'll catch you by and by.
       </div>
-
-      <img id="protectedImage" src="" alt="Protected image" />
     </div>
   </div>
 
   <script>
     const PASSWORD = "airport";
-    const IMAGE_URL = "Pic.png";
 
     const pwInput = document.getElementById("pw");
     const openBtn = document.getElementById("openBtn");
@@ -122,7 +111,6 @@ Find what I hold — I'll catch you by and by.
 
     const login = document.getElementById("login");
     const content = document.getElementById("content");
-    const img = document.getElementById("protectedImage");
     const title = document.getElementById("title");
 
     function openContent() {
@@ -132,7 +120,6 @@ Find what I hold — I'll catch you by and by.
         title.style.display = "none";
         login.style.display = "none";
         content.style.display = "block";
-        img.src = IMAGE_URL;
         msg.textContent = "";
       } else {
         msg.textContent = "Wrong password, YOU SHALL NOT PASS!!!";
