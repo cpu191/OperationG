@@ -1,134 +1,412 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Private Page</title>
+  <title>When the Time Comes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-deep: #0d0b1a;
+      --bg-mid: #1a1530;
+      --accent-gold: #c9a96e;
+      --accent-rose: #c47d8e;
+      --accent-lavender: #9b89c4;
+      --cream: #f0eade;
+      --text-dim: #9a8fb5;
+      --card-bg: rgba(255,255,255,0.04);
+      --card-border: rgba(201,169,110,0.18);
+      --glow: rgba(155,137,196,0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      margin: 0;
+      min-height: 100vh;
+      background: var(--bg-deep);
+      font-family: 'Crimson Pro', Georgia, serif;
+      color: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── starfield ── */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 0 var(--glow-r, 3px) rgba(255,255,255,0.6);
+      animation:
+        twinkle var(--d, 4s) ease-in-out infinite var(--delay, 0s),
+        drift-star var(--md, 20s) ease-in-out infinite alternate var(--mdelay, 0s);
+      opacity: 0;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0;                   transform: scale(0.75); }
+      50%       { opacity: var(--bright, 0.8);  transform: scale(1.2); }
+    }
+    @keyframes drift-star {
+      from { translate: 0px 0px; }
+      to   { translate: var(--mx, 18px) var(--my, 14px); }
+    }
+
+    /* ── ambient glow orbs ── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+      animation: drift var(--od, 18s) ease-in-out infinite alternate;
+    }
+    .orb1 { width: 420px; height: 420px; background: rgba(100,70,160,0.22); top: -100px; left: -80px; }
+    .orb2 { width: 350px; height: 350px; background: rgba(196,125,142,0.16); bottom: -80px; right: -60px; --od: 22s; }
+    .orb3 { width: 280px; height: 280px; background: rgba(201,169,110,0.12); top: 40%; left: 55%; --od: 26s; }
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(30px, 20px) scale(1.1); }
+    }
+
+    /* ── wrapper ── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
       padding: 20px;
-      font-family: Arial, sans-serif;
-      background: #eef1f6;
-      color: #2b2f3a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
     }
 
-    .card {
-      max-width: 500px;
-      margin: 40px auto;
-      background: #f8f5fb;
-      padding: 24px;
-      border-radius: 14px;
-      box-shadow: 0 6px 20px rgba(80, 70, 120, 0.15);
-    }
-
-    h1 {
-      margin-top: 0;
-      font-size: 22px;
+    /* ── page title ── */
+    .page-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.6rem, 5.5vw, 3.4rem);
+      white-space: nowrap;
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 0.04em;
+      color: var(--cream);
       text-align: center;
-      color: #6c5a8a;
+      line-height: 1.15;
+      margin-bottom: 10px;
+      text-shadow: 0 0 40px rgba(201,169,110,0.45), 0 2px 8px rgba(0,0,0,0.6);
+      animation: fadeDown 1.2s ease both;
+    }
+    .page-title span {
+      color: var(--accent-gold);
     }
 
-    input,
+    .title-rule {
+      width: 120px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--accent-gold), transparent);
+      margin-bottom: 32px;
+      animation: fadeIn 1.6s ease both;
+      animation-delay: 0.4s;
+    }
+
+    /* ── card ── */
+    .card {
+      width: 100%;
+      background: var(--card-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 36px 40px 40px;
+      box-shadow:
+        0 8px 40px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.04) inset,
+        0 1px 0 rgba(255,255,255,0.08) inset;
+      animation: fadeUp 1.2s ease both;
+      animation-delay: 0.2s;
+    }
+
+    /* ── lock section ── */
+    .lock-icon {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+    .lock-icon svg {
+      opacity: 0.55;
+      filter: drop-shadow(0 0 8px rgba(201,169,110,0.4));
+      transition: opacity 0.3s;
+    }
+
+    .card-subtitle {
+      font-size: 0.95rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: center;
+      margin-bottom: 24px;
+      font-weight: 300;
+      font-style: normal;
+      font-family: 'Crimson Pro', serif;
+    }
+
+    /* ── input ── */
+    .input-wrap {
+      position: relative;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 13px 18px;
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.12em;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 10px;
+      color: var(--cream);
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    input[type="password"]::placeholder {
+      color: rgba(240,234,222,0.3);
+      letter-spacing: 0.1em;
+      font-style: italic;
+    }
+    input[type="password"]:focus {
+      border-color: rgba(201,169,110,0.6);
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.1), 0 0 20px rgba(201,169,110,0.1);
+    }
+
+    /* ── button ── */
     button {
       width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
       margin-top: 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #d6cfe3;
-    }
-
-    input {
-      background: #ffffff;
-      color: #2b2f3a;
-    }
-
-    button {
-      background: #cbbbe6;
-      border: none;
-      color: #2b2f3a;
-      font-weight: bold;
+      padding: 13px 18px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, rgba(201,169,110,0.22), rgba(196,125,142,0.18));
+      border: 1px solid rgba(201,169,110,0.4);
+      border-radius: 10px;
+      color: var(--accent-gold);
       cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
+    button::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,169,110,0.15), rgba(196,125,142,0.1));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    button:hover::before { opacity: 1; }
+    button:hover {
+      border-color: rgba(201,169,110,0.7);
+      box-shadow: 0 0 24px rgba(201,169,110,0.2), 0 4px 16px rgba(0,0,0,0.3);
+      transform: translateY(-1px);
+      color: #dfc08a;
+    }
+    button:active { transform: translateY(0); }
 
+    /* ── error message ── */
     #msg {
-      margin-top: 12px;
-      color: #a06c6c;
-      min-height: 20px;
+      margin-top: 14px;
+      min-height: 22px;
       text-align: center;
-      font-size: 14px;
+      font-size: 0.88rem;
+      font-style: italic;
+      letter-spacing: 0.04em;
+      color: var(--accent-rose);
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    #msg.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
+    /* ── poem / content section ── */
     #content {
       display: none;
-      margin-top: 20px;
-      text-align: center;
+      animation: revealPoem 1.4s ease both;
     }
 
-    .intro-text {
+    .poem-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .poem-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+      font-family: 'Crimson Pro', serif;
+    }
+    .poem-divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--accent-lavender), transparent);
+      margin: 0 auto;
+    }
+
+    .poem-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.1rem, 2.8vw, 1.25rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 2;
+      color: var(--cream);
+      text-align: center;
       white-space: pre-wrap;
-      line-height: 1.6;
-      margin-bottom: 20px;
-      color: #3a3550;
+      text-shadow: 0 1px 12px rgba(155,137,196,0.25);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── keyframes ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes revealPoem {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1 id="title">Enter Password</h1>
 
-    <div id="login">
-      <input id="pw" type="password" placeholder="Password" autocomplete="off" />
-      <button id="openBtn" type="button">Open</button>
-      <div id="msg"></div>
-    </div>
+  <!-- ambient -->
+  <div class="stars" id="stars"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
 
-    <div id="content">
-      <div class="intro-text">
-I have a face, but where’s the rest?
+  <div class="wrapper">
+    <h1 class="page-title" id="pageTitle" style="display:none">When The <span>Time</span> Comes</h1>
+    <div class="title-rule" id="titleRule" style="display:none"></div>
+
+    <div class="card">
+
+      <!-- LOGIN STATE -->
+      <div id="login">
+        <div class="lock-icon">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-gold)">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <p class="card-subtitle">A secret awaits</p>
+        <div class="input-wrap">
+          <input id="pw" type="password" placeholder="speak the word…" autocomplete="off" />
+        </div>
+        <button id="openBtn" type="button">Unlock</button>
+        <div id="msg"></div>
+      </div>
+
+      <!-- POEM STATE -->
+      <div id="content">
+        <div class="poem-text">I have a face, but where's the rest?
 I gaze upon you, unexpressed
 I do not speak, yet I hold my ground
 A silent watcher where travellers are found.
+
 No wings to carry me, yet I watch them fly
-I keep a secret — can you tell me why? 
-Before you soar into the open sky, 
-Find what I hold — I'll catch you by and by.
+I keep a secret — can you tell me why?
+Before you soar into the open sky,
+Find what I hold — I'll catch you by and by.</div>
       </div>
+
     </div>
   </div>
 
   <script>
-    const PASSWORD = "airport";
+    /* ── starfield ── */
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 90; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 4 + 1.5;           // 1.5–5.5px (was 0.6–3)
+      const glowR = (size * 1.4).toFixed(1);
+      const mx = ((Math.random() - 0.5) * 50).toFixed(1); // drift ±25px x
+      const my = ((Math.random() - 0.5) * 40).toFixed(1); // drift ±20px y
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}%;
+        left:${Math.random()*100}%;
+        --d:${(Math.random()*5+3).toFixed(1)}s;
+        --delay:-${(Math.random()*8).toFixed(1)}s;
+        --bright:${(Math.random()*0.45+0.45).toFixed(2)};
+        --glow-r:${glowR}px;
+        --md:${(Math.random()*18+14).toFixed(1)}s;
+        --mdelay:-${(Math.random()*20).toFixed(1)}s;
+        --mx:${mx}px;
+        --my:${my}px;
+      `;
+      starsEl.appendChild(s);
+    }
 
+    /* ── password logic ── */
+    const PASSWORD = "airport";
     const pwInput = document.getElementById("pw");
     const openBtn = document.getElementById("openBtn");
-    const msg = document.getElementById("msg");
+    const msgEl   = document.getElementById("msg");
+    const loginEl = document.getElementById("login");
+    const contentEl = document.getElementById("content");
+    const pageTitle = document.getElementById("pageTitle");
+    const titleRule = document.getElementById("titleRule");
 
-    const login = document.getElementById("login");
-    const content = document.getElementById("content");
-    const title = document.getElementById("title");
+    function showMsg(text) {
+      msgEl.textContent = text;
+      msgEl.classList.remove('visible');
+      void msgEl.offsetWidth;
+      msgEl.classList.add('visible');
+    }
 
     function openContent() {
       const entered = pwInput.value.trim().toLowerCase();
-
       if (entered === PASSWORD) {
-        title.style.display = "none";
-        login.style.display = "none";
-        content.style.display = "block";
-        msg.textContent = "";
+        loginEl.style.display = "none";
+        pageTitle.style.display = "block";
+        titleRule.style.display = "block";
+        contentEl.style.display = "block";
       } else {
-        msg.textContent = "Wrong password, YOU SHALL NOT PASS!!!";
+        showMsg("Wrong password — YOU SHALL NOT PASS!!!");
+        pwInput.value = "";
+        pwInput.focus();
       }
     }
 
     openBtn.addEventListener("click", openContent);
-
-    pwInput.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        openContent();
-      }
+    pwInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") openContent();
     });
   </script>
 </body>
